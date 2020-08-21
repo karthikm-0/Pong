@@ -1,27 +1,35 @@
 from turtle import *
 
-# Create a player with their paddle
+# Create a player with their paddle and listen for inputs
 class Player:
-  # # of pixels to move the paddle each time the user presses something
+  # How much to move the paddle when user presses the corresponding key
   move_offset = 15 
 
-  # Provide initial information:
-  # speed - of the turtle object
-  # shape
-  # color
-  # initial positions of the object (x, y)
-  # size of the object (x, y)
-  def __init__(self, speed, shape, color, initial_pos_x, initial_pos_y):
-    player = Turtle()
-    player.shape('rectangle')
-    player.color(color)
-    player.penup()
-    player.goto(initial_pos_x, initial_pos_y)
+  def __init__(self, speed, shape, color, initial_pos_x, initial_pos_y, up_key, down_key):
+    # Create the turtle and set its characteristics
+    self.player = Turtle()
+    self.player.shape('rectangle')
+    self.player.color(color)
+    self.player.penup()
+    self.player.goto(initial_pos_x, initial_pos_y)
+    
+    # Set up the screen and movement
+    self.screen = Screen()
+    self.screen.onkey(self.move_up, up_key)
+    self.screen.onkey(self.move_down, down_key)
+    self.screen.listen()
+    
+  # Movement
+  def move_up(self):
+    print("Moving up")
+    self.player.sety(self.player.ycor() + self.move_offset)
 
-  #def move_paddle(direction):
-  def move_up():
-    new_y = player.ycor() + move_offset
-    player.sety(new_y)
+  def move_down(self):
+    print("Moving down")
+    self.player.sety(self.player.ycor() - self.move_offset)
+
+  def main(self):
+    self.screen.mainloop()
 
 # Encode information about the ball
 class Ball:
@@ -43,10 +51,6 @@ screen = Screen()
 screen.setup(500, 500)
 screen.bgcolor("black")
 
-# Key inputs
-screen.onkey(Player.move_up, 'Up')
-#screen.onkey(Player.move_down, "Down")
-
 # Information about a custom shape
 screen.register_shape("rectangle",[
   (paddle_width, paddle_height),
@@ -56,9 +60,10 @@ screen.register_shape("rectangle",[
 ])
 
 # Create players
-Player_A = Player(0, 'square', 'red', -250, 0)
-Player_B = Player(0, 'square', 'blue', 250, 0)
+Player_A = Player(0, 'square', 'red', -250, 0, 'Up', 'Down')
+Player_B = Player(0, 'square', 'blue', 250, 0, 'W', 'S')
 Ball = Ball(0, 'circle', 'white', 0, 0)
 
-screen.listen()
-screen.mainloop()
+Player_A.main()
+Player_B.main()
+
